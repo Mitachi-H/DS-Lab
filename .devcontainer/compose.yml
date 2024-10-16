@@ -1,0 +1,12 @@
+services:
+  jupyter:
+    image: DS-Lab/jupyter:1.0
+    container_name: "DS-Lab-jupyter"
+    environment:
+      - TZ=Asia/Tokyo
+    build: ./jupyter
+    working_dir: "/home/jovyan/work"
+    volumes:
+      - ../jupyter:/home/jovyan/work
+    stdin_open: true
+    tty: true

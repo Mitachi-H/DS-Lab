@@ -1,0 +1,20 @@
+{
+  "name": "DS-Lab",
+  "dockerComposeFile": "compose.yml",
+  "service": "jupyter",
+  "workspaceFolder": "/home/jovyan/work",
+  "remoteUser": "jovyan",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-toolsai.jupyter"
+      ],
+      "settings": {
+        "editor.tabSize": 2,
+        "python.defaultInterpreterPath": "/opt/conda/bin/python"
+      }
+    }
+  }
+}
