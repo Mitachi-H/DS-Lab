@@ -18,29 +18,36 @@ class HHNeuron():
         self.Vrest = -65.0  # 静止膜電位 (mV)
 
         # 状態変数の初期化
-        self.V = self.Vrest * np.ones((units, 1))  # 膜電位 (mV)
+        self.v = self.Vrest * np.ones((units, 1))  # 膜電位 (mV)
         self.m = 0.05 * np.ones((units, 1))
         self.h = 0.6 * np.ones((units, 1))
         self.n = 0.32 * np.ones((units, 1))
 
     # チャネルゲーティングの速度定数
     def alpha_m(self, V):
+        V = np.clip(V, -100, 100)  # Vを-100から100の範囲に制限
         return 0.1 * (25.0 - V) / (np.exp((25.0 - V) / 10.0) - 1)
 
     def beta_m(self, V):
+        V = np.clip(V, -100, 100)
         return 4.0 * np.exp(-V / 18.0)
 
     def alpha_h(self, V):
+        V = np.clip(V, -100, 100)
         return 0.07 * np.exp(-V / 20.0)
 
     def beta_h(self, V):
+        V = np.clip(V, -100, 100)
         return 1.0 / (1.0 + np.exp((30.0 - V) / 10.0))
 
     def alpha_n(self, V):
+        V = np.clip(V, -100, 100)
         return 0.01 * (10.0 - V) / (np.exp((10.0 - V) / 10.0) - 1)
 
     def beta_n(self, V):
+        V = np.clip(V, -100, 100)
         return 0.125 * np.exp(-V / 80.0)
+
 
     def step(self, reservoir, x: np.ndarray) -> np.ndarray:
         """
@@ -62,25 +69,25 @@ class HHNeuron():
 
         if self.method == 'Euler':
             # Euler法による更新
-            alpha_m = self.alpha_m(self.V)
-            beta_m = self.beta_m(self.V)
-            alpha_h = self.alpha_h(self.V)
-            beta_h = self.beta_h(self.V)
-            alpha_n = self.alpha_n(self.V)
-            beta_n = self.beta_n(self.V)
+            alpha_m = self.alpha_m(self.v)
+            beta_m = self.beta_m(self.v)
+            alpha_h = self.alpha_h(self.v)
+            beta_h = self.beta_h(self.v)
+            alpha_n = self.alpha_n(self.v)
+            beta_n = self.beta_n(self.v)
 
             self.m += self.dt * (alpha_m * (1.0 - self.m) - beta_m * self.m)
             self.h += self.dt * (alpha_h * (1.0 - self.h) - beta_h * self.h)
             self.n += self.dt * (alpha_n * (1.0 - self.n) - beta_n * self.n)
 
             # イオン電流の計算
-            I_Na = self.g_Na * self.m**3 * self.h * (self.V - self.E_Na)
-            I_K = self.g_K * self.n**4 * (self.V - self.E_K)
-            I_L = self.g_L * (self.V - self.E_L)
+            I_Na = self.g_Na * self.m**3 * self.h * (self.v - self.E_Na)
+            I_K = self.g_K * self.n**4 * (self.v - self.E_K)
+            I_L = self.g_L * (self.v - self.E_L)
 
             # 膜電位の更新
             dV = self.dt * (I_ext - I_Na - I_K - I_L) / self.C_m
-            self.V += dV
+            self.v += dV
         else:
             # ライブラリを使用した数値解法
             def hh_derivatives(t, y):
@@ -109,7 +116,7 @@ class HHNeuron():
                 return dydt
 
             # 初期条件の設定
-            y0 = np.concatenate([self.V.flatten(), self.m.flatten(),
+            y0 = np.concatenate([self.v.flatten(), self.m.flatten(),
                                  self.h.flatten(), self.n.flatten()])
 
             # solve_ivpを使用した数値積分
@@ -117,12 +124,12 @@ class HHNeuron():
 
             # 状態変数の更新
             y_end = sol.y[:, -1]
-            self.V = y_end[0:self.units].reshape(-1, 1)
+            self.v = y_end[0:self.units].reshape(-1, 1)
             self.m = y_end[self.units:2*self.units].reshape(-1, 1)
             self.h = y_end[2*self.units:3*self.units].reshape(-1, 1)
             self.n = y_end[3*self.units:4*self.units].reshape(-1, 1)
 
         # スパイクの検出
-        spikes = self.V >= 0
+        spikes = self.v >= 0
 
         return spikes.astype(np.float32).T
