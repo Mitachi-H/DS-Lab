@@ -26,13 +26,12 @@ else:
 from functools import partial
 from typing import Callable, Dict, Optional, Sequence, Union
 import numpy as np
-from NeuronModel import NeuronModel
 
 class CustomReservoir(Node):
     def __init__(
         self,
         units: int = None,
-        neuron_model: NeuronModel = None,  # 任意のニューロンモデル
+        neuron_model = None,  # 任意のニューロンモデル
         lr: float = 1.0,
         sr: Optional[float] = None,
         input_bias: bool = True,
@@ -93,9 +92,8 @@ class CustomReservoir(Node):
 
         noise_kwargs = dict() if noise_kwargs is None else noise_kwargs
 
-        # カスタムパラメータの初期化
+        # ニューロンモデルを保存
         self.neuron_model = neuron_model
-        self.membrane_potentials = np.zeros((units, 1))  # 各ニューロンの膜電位を0で初期化
 
         super(CustomReservoir, self).__init__(
             fb_initializer=partial(
@@ -111,7 +109,6 @@ class CustomReservoir(Node):
                 "Wfb": None,
                 "bias": None,
                 "internal_state": None,
-                "neuron_model": neuron_model,  # カスタムパラメータとして保持
             },
             hypers={
                 "lr": lr,
