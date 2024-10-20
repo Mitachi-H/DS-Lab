@@ -34,12 +34,9 @@ class LIFNeuron():
         # 不応期タイマーを減算
         self.refractory_timer = np.maximum(self.refractory_timer - 1, 0)
 
-        # 不応期ではないニューロンのインデックスを取得
-        not_refractory = self.refractory_timer == 0
-
-        # 不応期ではないニューロンの膜電位を更新
-        self.membrane_potentials[not_refractory] += (
-            (self.vrest - self.membrane_potentials[not_refractory] + self.R_m * I_ext[not_refractory])
+        # ニューロンの膜電位を更新
+        self.membrane_potentials += (
+            (self.vrest - self.membrane_potentials + self.R_m * I_ext)
             / self.tc_m
         )
 
