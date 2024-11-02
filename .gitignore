@@ -1,0 +1,14 @@
+# Python仮想環境
+myenv/
+
+# Pythonキャッシュ
+__pycache__/
+
+# Jupyter Notebookのチェックポイント
+.ipynb_checkpoints/
+
+# VS Codeの設定
+.vscode/
+
+# データファイル
+src/Data/

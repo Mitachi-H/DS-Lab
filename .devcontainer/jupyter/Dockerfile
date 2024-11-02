@@ -9,8 +9,8 @@ LABEL description="vscodeでdocker+jupyterを使う"
 # 作業ディレクトリを変更
 WORKDIR /home/jovyan/work
 
-# ファイルのコピー
-COPY requirements.txt ${PWD}
+# requirements.txtをプロジェクトのルートからコピー
+COPY /requirements.txt ${PWD}
 
 # pip自体のアップデート
 RUN pip install -U pip
