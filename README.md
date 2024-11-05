@@ -21,10 +21,31 @@ c. Jupyter Notebookのインストール
 pip install jupyter
 ```
 ### 3. 実行
-urlを発行し、カーネルに登録する
 a. urlを取得する
+
 以下のコマンドを実行し、得られるurlをコピーする
 ```
 jupyter notebook --no-browser --port=8888
 ```
-b. 実行時に要求されるカーネルにaで取得したurlを入力する
+b. VSCodeでの接続設定
+
+VSCodeのJupyterカーネル選択で「既存のJupyterサーバー」を指定し、先ほどのJupyterサーバーURLを入力する
+
+## 実行方法（backgroud）
+### 1. 下準備
+実行方法（not backgroud）の1, 2参照
+
+### 2. 実行
+a. nohupコマンドを使ってJupyter Notebookを起動
+```
+nohup jupyter notebook &
+```
+b. VSCodeでの接続設定
+
+VSCodeのJupyterカーネル選択で「既存のJupyterサーバー」を指定し、先ほどのJupyterサーバーURLを入力する
+
+参考：サーバーの終了
+```
+jupyter notebook list
+jupyter notebook stop (port_number_running)
+```

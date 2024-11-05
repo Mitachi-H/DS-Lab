@@ -12,3 +12,6 @@ __pycache__/
 
 # データファイル
 src/Data/
+
+# nohuup.out
+nohup.out
